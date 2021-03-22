@@ -32,5 +32,4 @@ export async function getCSRFtoken () {
   const resp = await fetch('https://downtofriend.herokuapp.com/api/csrf/restore');
   const { token } = await resp.json();
   await AsyncStorage.setItem('XSRF-Token', token);
-  return token;
 }
