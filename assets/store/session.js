@@ -14,7 +14,7 @@ export const LoadSession = () => ({ type: LOAD });
 export const UnloadSession = () => ({ type: UNLOAD });
 
 export const RestoreUser = () => async dispatch => {
-  const { data: { user } } = await csrfetch('/api/session');
+  const { data: { user } } = await csrfetch(`/api/session?mobileToken=${await AsyncStorage.getItem('JWT')}`);
   dispatch(SetSession(user));
 };
 
