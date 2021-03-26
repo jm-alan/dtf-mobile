@@ -11,7 +11,7 @@ export default function Login () {
   const dispatch = useDispatch();
   const user = useSelector(state => state.session.user);
 
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showError, setShowError] = useState(false);
 
@@ -19,7 +19,7 @@ export default function Login () {
 
   const onSubmit = () => {
     setShowError(false);
-    dispatch(Session.LogIn(username, password))
+    dispatch(Session.LogIn(email, password))
       .catch(() => setShowError(true));
   };
 
@@ -35,15 +35,18 @@ export default function Login () {
         Login
       </Text>
       <TextInput
+        placeholder='email'
         style={styles.input}
-        onChangeText={setUsername}
-        value={username}
+        onChangeText={setEmail}
+        value={email}
         autoCorrect={false}
         blurOnSubmit={false}
         returnKeyType='next'
         onSubmitEditing={() => passRef.current.focus()}
       />
       <TextInput
+        placeholder='password'
+        secureTextEntry
         ref={passRef}
         style={styles.input}
         onChangeText={setPassword}
