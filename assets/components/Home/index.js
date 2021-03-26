@@ -1,61 +1,16 @@
 
-import { StatusBar } from 'expo-status-bar';
 import React, { useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
-import * as Router from '../../store/router';
-import * as UI from '../../store/uiController';
-
-export default function Home ({ testText }) {
+export default function Home () {
   const dispatch = useDispatch();
   const page = useSelector(state => state.router.page);
+  const user = useSelector(state => state.session.user);
 
   return (
     <View style={styles.container}>
-      <Text>The current page is {page}</Text>
-      <Text>{testText}</Text>
-      <StatusBar style='auto' />
-      <TouchableOpacity
-        style={styles.navButton}
-        onPress={() => dispatch(Router.GoHome())}
-      >
-        <Text style={styles.buttonText}>
-          Home
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.navButton}
-        onPress={() => dispatch(Router.GoLogin())}
-      >
-        <Text style={styles.buttonText}>
-          Login
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.navButton}
-        onPress={() => dispatch(Router.GoSignup())}
-      >
-        <Text style={styles.buttonText}>
-          Signup
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.navButton}
-        onPress={() => dispatch(UI.ShowSidebar())}
-      >
-        <Text style={styles.buttonText}>
-          Sidebar
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.navButton}
-        onPress={() => dispatch(UI.HideSidebar())}
-      >
-        <Text style={styles.buttonText}>
-          Hidebar
-        </Text>
-      </TouchableOpacity>
+      <Text style={styles.bigText}>Home</Text>
     </View>
   );
 }
@@ -67,12 +22,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  navButton: {
-    height: 50,
-    padding: 20,
-    backgroundColor: 'steelblue',
-    alignItems: 'center',
-    justifyContent: 'center'
+  bigText: {
+    fontSize: 100
   },
   buttonText: {
     color: 'white'
