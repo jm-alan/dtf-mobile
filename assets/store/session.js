@@ -9,9 +9,9 @@ const UNLOAD = 'session/UNLOAD';
 
 export const SetSession = (user = null) => ({ type: USER, user });
 
-export const LoadSession = () => ({ type: LOAD });
+export const Load = () => ({ type: LOAD });
 
-export const UnloadSession = () => ({ type: UNLOAD });
+export const Unload = () => ({ type: UNLOAD });
 
 export const RestoreUser = () => async dispatch => {
   const { data: { user } } = await csrfetch(`/api/session?mobileToken=${await AsyncStorage.getItem('JWT')}`);
@@ -23,7 +23,8 @@ export const LogIn = (identification, password) => async dispatch => {
     method: 'POST',
     body: JSON.stringify({ identification, password })
   });
-  await AsyncStorage.setItem('JWT', token);
+  console.log('Received JWT response:', token);
+  await AsyncStorage.setItem('JWT', token ?? '');
   dispatch(SetSession(user));
 };
 
@@ -37,7 +38,7 @@ export const SignUp = newUser => async dispatch => {
       password
     })
   });
-  await AsyncStorage.setItem('JWT', token);
+  await AsyncStorage.setItem('JWT', token ?? '');
   dispatch(SetSession(user));
 };
 
@@ -49,6 +50,7 @@ export const LogOut = () => async dispatch => {
 };
 
 export default function reducer (
+  // eslint-disable-next-line
   state = { user: null, loaded: false },
   { type, user }
 ) {
