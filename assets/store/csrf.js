@@ -1,11 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default async function csrfetch (url, options = {}) {
-  url = `https://downtofriend.herokuapp.com${url}`;
-  options.method = options.method || 'GET';
-  options.headers = options.headers || {};
   const mobileToken = await AsyncStorage.getItem('JWT');
-  options.body = options.body ? JSON.stringify({ ...JSON.parse(options.body), mobileToken }) : JSON.stringify({ mobileToken });
+  url = `https://downtofriend.herokuapp.com${url}?mobileToken=${mobileToken}`;
+  options.method = options.method ?? 'GET';
+  options.headers = options.headers ?? {};
 
   if (options.method.toUpperCase() !== 'GET') {
     // do not set content type if attempting photo upload
@@ -16,6 +15,7 @@ export default async function csrfetch (url, options = {}) {
     }
     options.headers['XSRF-Token'] = await AsyncStorage.getItem('XSRF-Token');
   }
+  // eslint-disable-next-line
   const res = await fetch(url, options);
 
   const contentType = res.headers.get('content-type');
@@ -29,6 +29,7 @@ export default async function csrfetch (url, options = {}) {
 }
 
 export async function getCSRFtoken () {
+  // eslint-disable-next-line
   const resp = await fetch('https://downtofriend.herokuapp.com/api/csrf/restore');
   const { token } = await resp.json();
   await AsyncStorage.setItem('XSRF-Token', token);
