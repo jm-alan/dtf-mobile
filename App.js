@@ -1,35 +1,65 @@
 import React, { useEffect } from 'react';
-import { Dimensions, SafeAreaView } from 'react-native';
-import { Provider } from 'react-redux';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import { Dimensions, BackHandler, SafeAreaView, View } from 'react-native';
 
-import Home from './assets/components/Home';
+import { StatusBar } from 'expo-status-bar';
+
+import Router from './assets/components/Router';
+import NavWrapper from './assets/components/Router/NavWrapper';
 import Sidebar from './assets/components/Sidebar';
+import { HideSidebar } from './assets/store/uiController';
 
 import configureStore from './assets/store/index.js';
-// import { getCSRFtoken } from './assets/store/csrf';
+import { getCSRFtoken } from './assets/store/csrf';
+import * as session from './assets/store/session';
 
 const store = configureStore();
 
-const { width, height } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 
-export default function App () {
+function App () {
+  const dispatch = useDispatch();
+  const sidebar = useSelector(state => state.uiController.sidebar);
+
   useEffect(() => {
-    // getCSRFtoken();
-  }, []);
+    getCSRFtoken()
+      .then(() => dispatch(session.RestoreUser()))
+      .then(() => dispatch(session.Load()));
+    const handleBack = () => {
+      if (sidebar) {
+        dispatch(HideSidebar());
+        return true;
+      } else BackHandler.exitApp();
+    };
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBack);
+    return () => backHandler.remove();
+  }, [sidebar]);
 
   return (
-    <Provider store={store}>
-      <SafeAreaView style={{
-        width,
-        height,
-        flex: 1,
-        backgroundColor: '#fff',
-        justifyContent: 'center'
+    <SafeAreaView style={{
+      flex: 1,
+      backgroundColor: '#fff',
+      justifyContent: 'center'
+    }}
+    >
+      <StatusBar style='light' />
+      <NavWrapper />
+      <View style={{
+        height: height - 90,
+        top: 45
       }}
       >
         <Sidebar />
-        <Home />
-      </SafeAreaView>
+        <Router />
+      </View>
+    </SafeAreaView>
+  );
+}
+
+export default function Root () {
+  return (
+    <Provider store={store}>
+      <App />
     </Provider>
   );
 }
