@@ -1,23 +1,27 @@
-import React, { useEffect, useRef } from 'react';
-import { Animated, StyleSheet, Dimensions, View, Text, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { Animated, StyleSheet, Dimensions, View, Text, Image, TouchableHighlight } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { HideSidebar } from '../../store/uiController';
+import * as Router from '../../store/router';
+import * as Session from '../../store/session';
+import * as UI from '../../store/uiController';
 
 const { width, height } = Dimensions.get('window');
 
 export default function Sidebar () {
   const dispatch = useDispatch();
+  const user = useSelector(state => state.session.user);
   const display = useSelector(state => state.uiController.sidebar);
 
-  const translateX = useRef(new Animated.Value(-width)).current;
+  const [pressedLogin, setPressedLogin] = useState(false);
+  const [pressedSignup, setPressedSignup] = useState(false);
 
-  const dummies = ['These', 'are', 'some', 'example', 'containers'];
+  const translateX = useRef(new Animated.Value(-width)).current;
 
   const sideBar = () => {
     Animated.timing(translateX, {
       toValue: 0,
-      duration: 325,
+      duration: 250,
       useNativeDriver: true
     }).start();
   };
@@ -25,9 +29,14 @@ export default function Sidebar () {
   const hideBar = () => {
     Animated.timing(translateX, {
       toValue: -width,
-      duration: 325,
+      duration: 250,
       useNativeDriver: true
     }).start();
+  };
+
+  const sidebarAction = after => {
+    dispatch(after);
+    dispatch(UI.HideSidebar());
   };
 
   useEffect(() => {
@@ -42,22 +51,74 @@ export default function Sidebar () {
         transform: [{ translateX }]
       }}
     >
-      {dummies.map((dummy, idx) => (
-        <View
-          key={idx}
-          style={styles.subContainer}
-        >
-          <Text>{dummy}</Text>
-        </View>
-      ))}
-      <TouchableOpacity
-        onPress={() => dispatch(HideSidebar())}
-        style={styles.navButton}
-      >
-        <Text style={styles.buttonText}>
-          Hide
-        </Text>
-      </TouchableOpacity>
+      {
+      user
+        ? (
+          <>
+            <View style={styles.navHeader}>
+              <Image
+                style={styles.navatar}
+                source={{ uri: user.Avatar.url }}
+                resizeMode='cover'
+                resizeMethod='resize'
+              />
+              <Text style={styles.navUsername}>{user.firstName}</Text>
+            </View>
+            <TouchableHighlight
+              style={styles.navButton}
+              underlayColor='steelblue'
+              onShowUnderlay={() => setPressedLogin(true)}
+              onHideUnderlay={() => setPressedLogin(false)}
+              onPress={() => sidebarAction(Session.LogOut())}
+            >
+              <Text
+                style={{
+                  ...styles.buttonText,
+                  color: pressedLogin ? 'white' : 'steelblue'
+                }}
+              >
+                Logout
+              </Text>
+            </TouchableHighlight>
+          </>
+          )
+        : (
+          <>
+            <TouchableHighlight
+              style={styles.navButton}
+              underlayColor='steelblue'
+              onShowUnderlay={() => setPressedLogin(true)}
+              onHideUnderlay={() => setPressedLogin(false)}
+              onPress={() => sidebarAction(Router.GoLogin())}
+            >
+              <Text
+                style={{
+                  ...styles.buttonText,
+                  color: pressedLogin ? 'white' : 'steelblue'
+                }}
+              >
+                Login
+              </Text>
+            </TouchableHighlight>
+            <TouchableHighlight
+              style={styles.navButton}
+              underlayColor='steelblue'
+              onShowUnderlay={() => setPressedSignup(true)}
+              onHideUnderlay={() => setPressedSignup(false)}
+              onPress={() => sidebarAction(Router.GoSignup())}
+            >
+              <Text
+                style={{
+                  ...styles.buttonText,
+                  color: pressedSignup ? 'white' : 'steelblue'
+                }}
+              >
+                Signup
+              </Text>
+            </TouchableHighlight>
+          </>
+          )
+}
     </Animated.View>
   );
 }
@@ -66,28 +127,37 @@ const styles = StyleSheet.create({
   container: {
     borderColor: 'black',
     borderWidth: 1,
+    borderTopWidth: 0,
     position: 'absolute',
     zIndex: 999,
     width,
     height,
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center'
+    backgroundColor: '#fff'
   },
-  subContainer: {
-    borderWidth: 1,
-    borderColor: 'darkgrey',
-    width: '100%'
+  navHeader: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: 1
+  },
+  navatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25
+  },
+  navUsername: {
+    fontSize: 60
   },
   navButton: {
+    width: '100%',
     height: 50,
     padding: 20,
-    backgroundColor: 'steelblue',
-    alignItems: 'center',
-    justifyContent: 'center'
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    borderBottomWidth: 1
   },
   buttonText: {
-    color: 'white'
+    fontSize: 30
   }
 });
