@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default async function csrfetch (url, options = {}) {
   const mobileToken = await AsyncStorage.getItem('JWT');
-  url = `https://downtofriend.herokuapp.com${url}?mobileToken=${mobileToken}`;
+  url = `https://downtofriend.herokuapp.com${url}&mobileToken=${mobileToken}`;
   options.method = options.method ?? 'GET';
   options.headers = options.headers ?? {};
 
