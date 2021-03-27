@@ -4,11 +4,13 @@ import thunk from 'redux-thunk';
 import session from './session';
 import router from './router';
 import uiController from './uiController';
+import homeReel from './homeReel';
 
 const rootReducer = combineReducers({
   router,
   uiController,
-  session
+  session,
+  homeReel
 });
 
 let enhancer;
