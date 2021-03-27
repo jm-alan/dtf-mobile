@@ -40,6 +40,7 @@ export default function Login () {
         onChangeText={setEmail}
         value={email}
         autoCorrect={false}
+        autoCapitalize='none'
         blurOnSubmit={false}
         returnKeyType='next'
         onSubmitEditing={() => passRef.current.focus()}
