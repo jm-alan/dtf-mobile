@@ -14,16 +14,15 @@ export const Load = () => ({ type: LOAD });
 export const Unload = () => ({ type: UNLOAD });
 
 export const RestoreUser = () => async dispatch => {
-  const { data: { user } } = await csrfetch(`/api/session?mobileToken=${await AsyncStorage.getItem('JWT')}`);
+  const { data: { user } } = await csrfetch('/api/session?');
   dispatch(SetSession(user));
 };
 
 export const LogIn = (identification, password) => async dispatch => {
-  const { data: { user, token } } = await csrfetch('/api/session', {
+  const { data: { user, token } } = await csrfetch('/api/session?', {
     method: 'POST',
     body: JSON.stringify({ identification, password })
   });
-  console.log('Received JWT response:', token);
   await AsyncStorage.setItem('JWT', token ?? '');
   dispatch(SetSession(user));
 };
