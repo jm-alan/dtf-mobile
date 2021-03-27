@@ -17,6 +17,29 @@ const store = configureStore();
 
 const { height } = Dimensions.get('window');
 
+// eslint-disable-next-line
+String.prototype.toTitleCase = function () {
+  if (!this.match(/ /g)) return [this[0].toUpperCase(), this.slice(1)].join('');
+  return this
+    .split(' ')
+    .map($ => [$[0].toUpperCase(), $.slice(1)].join(''))
+    .join(' ');
+};
+
+Object.deepEq = function ($, _) {
+  if (!$ || !_ || typeof $ !== 'object' || typeof _ !== 'object') return false;
+  const [$_, __] = [$, _].map(Object.entries);
+  if ($_.length !== __.length) return false;
+  for (let i = 0; i < $_.length; i++) {
+    if (
+      (typeof $_[i][1] !== 'object' &&
+      $_[i][1] !== __[i][1]) ||
+      !Object.deepEq($_[i][1], __[i][1])
+    ) return false;
+  }
+  return true;
+};
+
 function App () {
   const dispatch = useDispatch();
   const sidebar = useSelector(state => state.uiController.sidebar);
