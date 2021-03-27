@@ -28,9 +28,9 @@ export const RestoreList = () => ({ type: RESTORE });
 
 export const SetEnumerable = enumerable => ({ type: MODE, enumerable });
 
-export const LoadReel = () => ({ type: LOAD });
+export const Load = () => ({ type: LOAD });
 
-export const UnloadReel = () => ({ type: UNLOAD });
+export const Unload = () => ({ type: UNLOAD });
 
 export const SetRef = ref => ({ type: REF, ref });
 
@@ -40,7 +40,7 @@ export const UnPop = () => ({ type: UNPOP });
 
 export const SetLimit = limit => ({ type: LIMIT, limit });
 
-export const EnumerateReel = (
+export const Enumerate = (
   centerLng, centerLat, lowerLng,
   upperLng, lowerLat, upperLat
 ) => async dispatch => {
